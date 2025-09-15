@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>The Beach Flags Series 2025</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <link rel="icon" href="logo.png" type="image/png">
+    <style>
+        :root {
+            --accent:#0b6b8a;
+            --accent-2:#0a4e63;
+            --muted:#555;
+            --bg-card:#f9f9f9;
+            --maxw:900px;
+        }
+        *{box-sizing:border-box}
+        body{margin:0;font-family:"Helvetica Neue",Arial,sans-serif;line-height:1.7;color:#111;background:#fff}
+
+        /* ヘッダー */
+        header{
+            position:fixed;top:0;left:0;right:0;z-index:1000;
+            display:flex;align-items:center;justify-content:space-between;
+            padding:12px 18px;background:rgba(255,255,255,0.7);
+            backdrop-filter:blur(6px);border-bottom:1px solid #eee;
+            transition:background .3s, box-shadow .3s;
+        }
+        header.scrolled{background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+        .brand{display:flex;align-items:center;gap:8px}
+        .brand img{width:40px;height:40px;object-fit:cover}
+        nav a{margin-left:16px;color:var(--accent-2);font-weight:600;text-decoration:none;position:relative}
+        nav a::after{
+            content:"";position:absolute;left:0;bottom:-4px;width:0;height:2px;
+            background:var(--accent);transition:width .3s ease;
+        }
+        nav a:hover::after{width:100%}
+
+        /* オープニング */
+        #overlay{
+            position:fixed;inset:0;z-index:2000;
+            display:flex;align-items:center;justify-content:center;
+            background:#fff;flex-direction:column;text-align:center;
+        }
+        #overlay img{max-width:60%;opacity:0;transform:scale(0.9);
+            transition:opacity 1.2s ease,transform 1.2s ease}
+        #openingText{
+            margin-top:20px;font-size:1.2rem;font-weight:bold;color:var(--accent-2);
+            opacity:0;transition:opacity 1.2s ease 1.2s;
+        }
+
+        /* メイン */
+        main{max-width:var(--maxw);margin:0 auto;padding:100px 16px 60px}
+
+        /* タイトル・リード文 */
+        h2{margin-top:40px;font-size:1.6rem;color:var(--accent-2);border-left:4px solid var(--accent);padding-left:10px}
+        h3{margin-top:28px;font-size:1.25rem;color:var(--accent-2)}
+        .lead-title{font-weight:bold;margin:16px 0 8px;font-size:1.1rem}
+        .lead-text{font-size:0.95rem;color:#222}
+
+        /* ヒーロー */
+        .hero{margin-top:70px;text-align:center;overflow:hidden;border-radius:8px}
+        .hero img{width:100%;border-radius:8px;transition:transform 1s ease}
+        .hero img:hover{transform:scale(1.05)}
+
+        /* カードスタイル */
+        .card{
+            background:var(--bg-card);
+            border-radius:10px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.08);
+            padding:16px;
+            margin:20px 0;
+            transition:transform .3s ease;
+        }
+        .card:hover{transform:translateY(-4px);}
+        .card h4{margin-top:12px;color:var(--accent-2);}
+        .card ul{padding-left:20px;font-size:0.95rem;}
+        /* 地域予選ラウンド */
+        .round{opacity:0;transform:translateY(40px);transition:all 1s ease;margin-bottom:30px}
+        .round.visible{opacity:1;transform:translateY(0)}
+        .round img{width:100%;margin:12px 0;border-radius:8px;transition:transform .6s ease}
+        .round img:hover{transform:scale(1.03)}
+
+        /* 過去大会セクション */
+        #history {margin:60px 0;}
+        #history a {color:var(--accent);text-decoration:none;font-weight:bold;}
+        #history a:hover {text-decoration:underline;}
+        .video-wrapper {
+            position:relative;
+            padding-bottom:56.25%;
+            height:0;
+            overflow:hidden;
+            border-radius:8px;
+        }
+        .video-wrapper iframe {
+            position:absolute;
+            top:0;left:0;width:100%;height:100%;
+        }
+
+        /* テーブル風タイムテーブル */
+        .table{
+            width:100%;
+            border-collapse:collapse;
+            margin:10px 0;
+        }
+        .table th,.table td{
+            border:1px solid #ddd;
+            padding:6px 8px;
+            text-align:left;
+        }
+        .table th{background:var(--accent-2);color:#fff}
+        .table td{background:#fff}
+
+        /* 連絡先 */
+        #contact a{color:var(--accent)}
+
+        /* カスタムポインター */
+        #cursor{
+            position:fixed;top:0;left:0;width:24px;height:24px;
+            background:radial-gradient(circle at center, yellow 40%, rgba(255,255,0,0.2) 70%, rgba(255,255,0,0,0) 100%);
+            border-radius:50%;pointer-events:none;
+            transform:translate(-50%,-50%);
+            z-index:3000;
+            transition:transform 0.08s ease; /* 少し速めで感度良く */
+        }
+        /* ハンバーガーメニュー */
+        .hamburger{
+            display:none;
+            font-size:24px;
+            background:none;
+            border:none;
+            cursor:pointer;
+            color:var(--accent-2);
+        }
+        @media (max-width:768px){
+            nav{
+                position:absolute;top:60px;right:0;
+                background:#fff;flex-direction:column;
+                align-items:flex-start;
+                box-shadow:0 4px 12px rgba(0,0,0,0.1);
+                display:none;
+                padding:10px 20px;
+            }
+            nav.show{display:flex;}
+            nav a{margin:10px 0;}
+            .hamburger{display:block;}
+        }
+
+
+    </style>
+</head>
+<body>
+<header id="siteHeader">
+    <div class="brand">
+        <img src="logo.png" alt="ロゴ">
+        <strong>The Beach Flags Series 2025</strong>
+    </div>
+    <button class="hamburger" id="hamburger">☰</button>
+    <nav id="navMenu">
+        <a href="#about">概要</a>
+        <a href="#structure">大会構成</a>
+        <a href="#regional">予選</a>
+        <a href="#contact">問い合わせ</a>
+    </nav>
+</header>
+
+<div id="overlay">
+    <div class="opening-content">
+        <img id="openingLogo" src="header.jpg" alt="Opening Logo">
+        <p id="openingText">集まれ！足自慢！誰でも参加可能なビーチフラッグス大会開催！</p>
+    </div>
+</div>
+
+
+<main>
+    <!-- ヒーロー -->
+    <section class="hero">
+        <img src="top.jpeg" alt="ビーチフラッグス イメージ">
+    </section>
+
+    <!-- 概要 -->
+    <section id="about">
+        <p class="lead-title">集まれ！足自慢！誰でも参加可能なビーチフラッグス大会開催！</p>
+        <p class="lead-text">
+            The Beach Flags Seriesは、ライフセービングスポーツの普及及び溺水防止を目的に開催されます。
+            誰でも参加可能な「ビーチフラッグス」を通じて、その魅力を体験・観戦していただきます。
+        </p>
+        <p class="lead-text">
+            本年度から地域予選ラウンドを展開し、上位に入賞した選手にはファイナルラウンドへの出場権を獲得できます。
+        </p>
+    </section>
+
+    <!-- 大会構成 -->
+    <section id="structure">
+        <h2>大会構成</h2>
+        <div class="card">
+            <h3>渋谷ファイナルラウンド</h3>
+            <ul>
+                <li><span class="badge">開催日時</span>：2025年11月9日(日)</li>
+                <li><span class="badge">場所</span>：東京都渋谷区代々木公園</li>
+                <li><span class="badge">主催</span>：公益財団法人日本ライフセービング協会</li>
+                <li><span class="badge">参加カテゴリ</span>：オープン（年齢制限なし）、ユース（U18）</li>
+                <li><span class="badge">表彰内容</span>：上位者には賞品・賞状授与</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 地域予選 -->
+    <section id="regional">
+        <h2>地域予選ラウンド</h2>
+        <p>以下3大会を地域予選ラウンドとして実施予定。ライフセーバー以外も「誰でも」参加可能です。</p>
+
+        <div class="round card">
+            <h3>1. 第28回神奈川県ライフセービング選手権</h3>
+            <img src="kanagawa.jpg" alt="神奈川大会">
+            <ul>
+                <li><span class="badge">開催日時</span>：2025年5月24-25日</li>
+                <li><span class="badge">場所</span>：神奈川県三浦市三浦海岸</li>
+                <li style="color:red"><span class="badge">中止</span>　悪天候のため中止</li>
+            </ul>
+        </div>
+
+        <div class="round card">
+            <h3>2. Japan Beach Games 須磨2025</h3>
+            <img src="koube.png" alt="須磨大会">
+            <h4>競技日程</h4>
+            <table class="table">
+                <tr><th>イベント</th><th>時間</th></tr>
+                <tr><td>予選</td><td>13:00〜16:00</td></tr>
+                <tr><td>決勝</td><td>16:00〜16:45</td></tr>
+                <tr><td>表彰</td><td>16:45〜17:00</td></tr>
+            </table>
+            <h4>会場</h4>
+            <p>神戸須磨海岸（Japan Beach Games 須磨会場内）<br>
+                須磨海岸「願いの椰子の木」「海のひろば」前ビーチ<br>
+                「JR須磨駅」徒歩15分、「JR須磨海浜公園」徒歩15分</p>
+            <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.4871848698896!2d135.11337461523212!3d34.64057818044924!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60008a1b58d89b77%3A0x2e0cdbb0bde9be1d!2z5p2-5pys44OQ44O844Og44K544Kr44OV44Kn44OI!5e0!3m2!1sja!2sjp!4v1695111111111!5m2!1sja!2sjp" allowfullscreen="" loading="lazy"></iframe>
+            <h4>カテゴリー</h4>
+            <ul>
+                <li>ユース(16歳〜18歳)：男子・女子</li>
+                <li>オープン(年齢無制限)：男子・女子</li>
+                <li>※2025年3月31日時点での年齢が16〜18歳であること。（15歳も可）</li>
+            </ul>
+            <h4>申し込み</h4>
+            <ul>
+                <li><span class="badge">締め切り</span>：9月24日(水)</li>
+                <li><span class="badge">参加費</span>：2,000円（保険料込み）</li>
+                <li>※募集状況によって延長/締め切り等になる場合がございます。</li>
+            </ul>
+        </div>
+
+        <div class="round card">
+            <h3>3. 第25回オーシャンサーフチャレンジin白浜2025</h3>
+            <img src="shirahama.png" alt="白浜大会">
+            <h4>競技日程</h4>
+            <table class="table">
+                <tr><th>イベント</th><th>時間</th></tr>
+                <tr><td>予選</td><td>13:00〜16:00</td></tr>
+                <tr><td>決勝</td><td>16:00〜16:45</td></tr>
+                <tr><td>表彰</td><td>16:45〜17:00</td></tr>
+            </table>
+            <h4>会場</h4>
+            <p>和歌山県・白良浜海水浴場</p>
+            <h4>カテゴリー</h4>
+            <ul>
+                <li>ユース(16歳〜18歳)：男子・女子</li>
+                <li>オープン(年齢無制限)：男子・女子</li>
+            </ul>
+            <h4>申し込み</h4>
+            <ul>
+                <li><span class="badge">参加費</span>：2,000円（保険料込み）</li>
+                <li><span class="badge">申し込み</span>：まもなく公開予定</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 過去大会の様子 -->
+    <section id="history">
+        <h2>過去大会の様子</h2>
+        <div class="history-content">
+            <h3>The Beach Flags Series 2023 大会記事</h3>
+            <p>
+                <a href="https://prtimes.jp/main/html/rd/p/000000029.000043525.html" target="_blank">
+                    【開催報告】東京/渋谷で開催されたビーチイベント『The Beach Flags Series 2023』が盛況にて閉幕！
+                </a>
+            </p>
+
+            <h3>The Beach Flags Series 2023 大会映像</h3>
+            <div class="video-wrapper">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/erXq_7OFncY"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- 問い合わせ -->
+    <section id="contact">
+        <h2>お問い合わせ</h2>
+        <p>Beach Flags Series 実行委員会<br>
+            <a href="mailto:demo@example.com">demo@example.com</a></p>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', e => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        });
+
+        const header=document.getElementById('siteHeader');
+        window.addEventListener('scroll',()=>{
+            if(window.scrollY>60) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        // Opening animation
+        const overlay=document.getElementById('overlay');
+        const logo=document.getElementById('openingLogo');
+        const text=document.getElementById('openingText');
+        requestAnimationFrame(()=>{
+            logo.style.opacity=1;
+            logo.style.transform="scale(1)";
+            text.style.opacity=1;
+        });
+        setTimeout(()=>{
+            overlay.style.transition="opacity 1.2s ease";
+            overlay.style.opacity=0;
+            setTimeout(()=>overlay.style.display="none",1200);
+        },4000);
+
+
+        // Scroll reveal effect
+        const rounds=document.querySelectorAll('.round');
+        const reveal=()=>{
+            const trigger=window.innerHeight*0.85;
+            rounds.forEach(r=>{
+                const rect=r.getBoundingClientRect();
+                if(rect.top<trigger){r.classList.add('visible');}
+            });
+        };
+        window.addEventListener('scroll',reveal);
+        reveal();
+
+        // ハンバーガーメニュー制御
+        const hamburger=document.getElementById('hamburger');
+        const navMenu=document.getElementById('navMenu');
+        hamburger.addEventListener('click',()=>{
+            navMenu.classList.toggle('show');
+        });
+
+    });
+</script>
+</body>
+</html>

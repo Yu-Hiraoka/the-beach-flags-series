@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <title>The Beach Flags Series 2025</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@500;700&family=Russo+One&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" href="logo.png" type="image/png" />
+    <style>
+        /* ===== カラーテーマ（ここだけ変えれば全体変更できます） ===== */
+        body{
+            font-size: 0.9rem;
+        }
+        :root{
+            --bg: #ffffff;           /* 背景色（ご指定） */
+            --text:#111;            /* 基本文字色 */
+            --heading:#000;         /* 見出し色（ご指定＝黒） */
+            --accent: #000000;       /* アクセント1 */
+            --accent-2: #000000;     /* アクセント2 / リンク */
+            --muted:#555;
+            --bg-card:#f9f9f9;
+            --maxw:900px;
+            --header-h:64px;        /* ヘッダー高さ（JSでも参照） */
+            --logo-shift-y: -10vh;  /* -6〜-14vhあたりで調整 */
+            --hl-yellow: rgba(244, 205, 39);
+            --badge-bg: #eef6ff;
+            --badge-tx: #0b6b8a;
+            --badge-danger-bg: #fde8e8;
+            --badge-danger-tx: #d93025;
+            --badge-neutral-bg: #dbe5ff;
+            --badge-neutral-tx: #333;
+        }
+        .list-style-none{
+            list-style: none;
+        }
+        /* すでに付けたアイコンは無効化（HTMLを触らなくても消える） */
+        .round h4[data-ico]::before{ content:none !important; }
+
+        /* --- Roundカードの見出しを“黄色ラベル”に --- */
+        .round.card h4{
+            /* 背景ラベル */
+            display: inline-block;                 /* ← 背景をテキストの幅だけに */
+            background: var(--hl-yellow);
+            color: var(--heading);
+            padding: 6px 10px;
+            border-radius: 4px;
+            line-height: 1.2;
+
+            /* 余白（詰め気味） */
+            margin: 10px 0 8px;                    /* 上下の縦余白を小さく */
+            font-size: 1.05rem;                    /* 少しだけ大きくしてメリハリ */
+            font-weight: 800;
+        }
+
+        /* 見出し直下の本文ブロックの“間”も詰める */
+        .round.card h4 + p,
+        .round.card h4 + ul,
+        .round.card h4 + table { margin-top: 8px; }
+
+        /* h3/h4/p のベース余白を少しだけ縮める（カード内だけ） */
+        .card h3{ margin: 10px 0 8px; font-size: 1.16rem; }
+        .card h4{ margin: 10px 0 8px; }          /* 上で .round.card h4 が上書き */
+        .card p { margin: 6px 0 10px; }
+        .card ul{ margin: 6px 0 10px; }
+        .card li{ margin: 4px 0; }
+
+        *{ box-sizing:border-box; }
+        html{ scroll-behavior:smooth; /* 基本のスムース。最終的なオフセットはJSで補正 */ }
+        body{
+            margin:0;
+            font-family:'M PLUS 1p','Russo One','Helvetica Neue',Arial,sans-serif;
+            line-height:1.7;
+            color:var(--text);
+            background:var(--bg);
+        }
+        .sport-font{ font-family:'Russo One','M PLUS 1p',sans-serif; }
+
+        /* ヘッダー */
+        header{
+            position:fixed; inset:0 0 auto 0; z-index:1000;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:12px 18px; background: var(--hl-yellow);
+            backdrop-filter:blur(6px); border-bottom:1px solid #eee;
+            transition:background .3s, box-shadow .3s;
+            height:var(--header-h);
+        }
+        header.scrolled{ background:rgba(244, 205, 39); box-shadow:0 4px 12px rgba(244, 205, 39, 0.08); }
+        .brand{ display:flex; align-items:center; gap:8px; transition:opacity .2s ease; }
+        .brand img{ width:40px; height:40px; object-fit:cover; }
+        nav a{
+            margin-left:16px; color:var(--accent-2); font-weight:600;
+            text-decoration:none; position:relative;
+        }
+        nav a::after{
+            content:""; position:absolute; left:0; bottom:-4px; width:0; height:2px;
+            background:var(--accent); transition:width .3s ease;
+        }
+        nav a:hover::after{ width:100%; }
+
+        /* オープニング（スマホでも上下中央揃え&安全領域） */
+        #overlay{
+            position:fixed; inset:0; z-index:2000;
+            display:grid; place-items:center; /* 上下左右中央揃え */
+            background:#ffffff;
+            text-align:center;
+            min-height:100dvh; /* モバイルのアドレスバーを考慮したvh */
+            padding:16px;      /* 端末によっては余白を少し */
+        }
+        .opening-content{
+            display:grid; place-items:center; width:min(90vw,780px);
+        }
+        #overlay img{
+            width:100%; height:auto; max-height:70dvh; object-fit:contain;
+            opacity:0; transform:scale(.9);
+            transition:opacity 1.2s ease, transform 1.2s ease;
+        }
+
+        main{ max-width:var(--maxw); margin:0 auto; padding: 16px 16px 80px 16px; }
+
+        h2{
+            margin-top:60px; font-size:1.4rem; color:var(--heading);
+            border-left:4px solid var(--heading); padding-left:10px;
+        }
+        h3{ font-size:1.25rem; color:var(--heading); }
+        .lead-title{ font-weight:bold; margin:16px 0 8px; font-size:1.3rem; color:var(--heading); }
+        .lead-text{ font-size:.95rem; color:#222; }
+
+        .hero{ margin-top:70px; text-align:center; overflow:hidden; border-radius:8px; }
+        .hero img{ width:100%; border-radius:8px; transition:transform 1s ease; }
+
+        .card{
+            background:var(--bg-card); border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.08);
+            padding:16px; margin:20px 0; transition:transform .3s ease;
+        }
+        .card:hover{ transform:translateY(-4px); }
+        .card h4{ margin-top:12px; color:var(--heading); }
+        .card ul{ padding-left:20px; font-size:.9rem; }
+
+        /* 大会構成カード専用の詰めレイアウト */
+        #structure .card h3{ margin:8px 0 10px; font-size:1.18rem; }
+
+        /* 「参加条件」の小見出し（黄色ラベル） */
+        .section-title{ margin:12px 0 6px; }
+        .section-title .chip{ display:inline-block; background:var(--hl-yellow); color:#000;
+            font-weight:800; padding:6px 12px; border-radius:4px; line-height:1.2; }
+
+        /* 箇条書きは少し詰める */
+        .cond-list{ margin:6px 0 0; padding-left:1.1em; }
+        .cond-list li{ margin:4px 0; }
+
+        .round{ opacity:0; transform:translateY(40px); transition:all 1s ease; margin-bottom:30px; }
+        .round.visible{ opacity:1; transform:translateY(0); }
+        .round img{ width:100%; margin:12px 0; border-radius:8px; transition:transform .6s ease; }
+
+        .video-wrapper{ position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; }
+        .video-wrapper iframe{ position:absolute; inset:0; width:100%; height:100%; }
+        .map{
+            width: 100%;
+            height: 50vw;
+            max-width: 600px;
+            max-height: 450px;
+        }
+
+        .table{ width:100%; border-collapse:collapse; margin:10px 0; }
+        .table th, .table td{ border:1px solid #ddd; padding:6px 8px; text-align:left; }
+        .table th{ background:var(--heading); color:#fff; }
+        .table td{ background:#fff; }
+
+        #contact a{ color:var(--accent); }
+
+        /* 強調用バッジ（締切・ステータス等） */
+        .badge{
+            display:inline-block; padding: 3px 8px; border-radius: 999px;
+            font-weight: 800; line-height:1; vertical-align: baseline;
+        }
+        .badge.primary{ background: var(--badge-bg); color: var(--badge-tx); }
+        .badge.danger{ background: var(--badge-danger-bg); color: var(--badge-danger-tx); }
+        .badge.neutral{ background: var(--badge-neutral-bg); color: var(--badge-neutral-tx); }
+
+        /* === ハンバーガー === */
+        .hamburger{
+            display:none; position:relative; z-index:1101; width:42px; height:42px;
+            border:0; border-radius:12px; background:rgba(10,78,99,.06); cursor:pointer;
+        }
+        .hamburger:focus-visible{ outline:3px solid rgba(11,107,138,.35); outline-offset:2px; }
+        .hamburger .bars{ position:absolute; inset:0; display:grid; place-items:center; }
+        .hamburger .bar{
+            position:relative; width:22px; height:2.5px; background:var(--accent-2); border-radius:2px;
+            transition:transform .35s ease, opacity .25s ease, width .2s ease;
+        }
+        .hamburger .bar::before, .hamburger .bar::after{
+            content:""; position:absolute; left:0; width:22px; height:2.5px; background:var(--accent-2); border-radius:2px;
+            transition:transform .35s ease, top .35s ease, width .2s ease, opacity .25s ease;
+        }
+        .hamburger .bar::before{ top:-7px; }
+        .hamburger .bar::after{ top:7px; }
+        .hamburger:hover{ box-shadow:0 6px 20px rgba(10,78,99,.12) inset, 0 1px 0 rgba(255,255,255,.8); }
+        .hamburger:active{ transform:scale(.98); }
+        /* X へ変形 */
+        .hamburger[aria-expanded="true"] .bar{ transform:rotate(45deg); }
+        .hamburger[aria-expanded="true"] .bar::before{ transform:rotate(90deg); top:0; }
+        .hamburger[aria-expanded="true"] .bar::after{ opacity:0; width:0; }
+
+        /* モバイル用ナビ */
+        .nav-backdrop{
+            position:fixed; inset:0; background:rgba(0,0,0,.36); backdrop-filter:blur(2px);
+            opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:1100;
+        }
+        .nav-backdrop.show{ opacity:1; pointer-events:auto; }
+        body.menu-open .brand, body.menu-open #navMenu{ opacity:0; visibility:hidden; }
+
+        #navMenu{ display:flex; align-items:center; }
+
+        @media (max-width:768px){
+            #navMenu{ display:none !important; }
+            .nav-panel{
+                position:fixed; top:0; right:0; height:100dvh; width:min(78vw,360px); background:#fff;
+                box-shadow:-8px 0 24px rgba(0,0,0,.12);
+                transform:translateX(100%); transition:transform .35s ease; z-index:1102;
+                display:flex; flex-direction:column; padding:20px 24px; gap:12px;
+            }
+            .nav-panel.show{ transform:translateX(0); }
+            .nav-links{ display:grid; gap:14px; margin-top:8px; }
+            .nav-links a{
+                display:block; padding:10px 12px; border-radius:10px; color:var(--accent-2);
+                font-weight:700; text-decoration:none; letter-spacing:.2px; background:rgba(244, 205, 39);
+            }
+            .nav-links a:active{ transform:translateY(1px); }
+            .hamburger{ display:inline-block; }
+            body.menu-open{ overflow:hidden; }
+            /* パネルの✕ボタン */
+            .close-panel{
+                align-self:flex-end; border:0; background:transparent; font-size:24px; line-height:1;
+                cursor:pointer; padding:6px; border-radius:8px;
+            }
+            .close-panel:focus-visible{ outline:3px solid rgba(11,107,138,.35); outline-offset:2px; }
+        }
+
+        /* アンカーの見切れ防止（CSS側の保険） */
+        :target{ scroll-margin-top: calc(var(--header-h) + 12px); }
+
+        @media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !important; } }
+
+        /* --- Instagram アイコンリンク --- */
+        .insta-link{ display:inline-flex; align-items:center; justify-content:center;
+            width:28px; height:28px; border-radius:50%; color:var(--accent-2);
+            text-decoration:none; margin-left:16px;
+        }
+        .insta-link:hover{ color:var(--accent); background:rgba(0,0,0,.04); }
+        .insta-link i{ font-size:20px; line-height:1; display:block; }
+
+        /* モバイルパネルの最下部に固定っぽく配置 */
+        .nav-social{
+            margin-top:auto; padding-top:16px; border-top:1px solid #eee;
+            display:flex; align-items:center; gap:10px;
+        }
+        .nav-social .label{ font-weight:700; color:#333; }
+        /* 楕円ピル（アイコン＋ハンドル） */
+        .social-pill{
+            display:inline-flex; align-items:center; gap:8px;
+            padding:8px 12px;
+            border:1px solid rgba(0,0,0,.15);   /* ← 薄い枠線 */
+            border-radius:9999px;               /* ← 楕円 */
+            background:#fff;
+            text-decoration:none;
+            color:var(--accent-2);
+        }
+        .social-pill:hover{ background:rgba(0,0,0,.04); }
+        .social-pill i{ font-size:18px; line-height:1; display:block; }
+        .social-pill .handle{ font-weight:700; letter-spacing:.2px; }
+
+        /* 既存の .insta-link はモバイルでは使わないので余白を打ち消し */
+        .nav-social .insta-link{ margin-left:0; }
+
+
+        /* --- フッター --- */
+        footer#siteFooter{
+            background:#fff; border-top:1px solid #eee;
+            margin-bottom: 50px;
+        }
+        #siteFooter .inner{
+            align-items: center;         /* 中央寄せ */
+            text-align: center;          /* テキスト中央揃え */
+        }
+        #siteFooter img{
+            width:60%;
+            max-width: 400px;
+        }
+
+        /* ==== スクロールバー カスタマイズ ==== */
+
+        /* Chrome / Safari / Edge 用 */
+        ::-webkit-scrollbar {
+            width: 10px;              /* 太さ */
+            height: 10px;             /* 横スクロール時 */
+        }
+        ::-webkit-scrollbar-track {
+            background: #f2f2f2;       /* トラック部分 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #CAA91EFF; /* ← 黄色 */
+            border-radius: 999px;      /* 楕円状に */
+            border: 2px solid #f2f2f2; /* 隙間を空けておしゃれ感 */
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #CAA91EFF; /* ホバー時に濃い黄色 */
+        }
+
+        /* Firefox 用 */
+        * {
+            scrollbar-width: thin;                    /* 細め */
+            scrollbar-color: #CAA91EFF #f2f2f2;         /* thumb色 背景色 */
+        }
+
+    </style>
+</head>
+<body>
+<header id="siteHeader">
+    <div class="brand">
+        <img src="logo.png" alt="ロゴ" />
+        <strong class="sport-font">THE BEACHFLAGS SERIES 2025</strong>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="メニューを開閉" aria-controls="mobileNav" aria-expanded="false">
+        <span class="bars"><span class="bar" aria-hidden="true"></span></span>
+    </button>
+    <nav id="navMenu" aria-label="メインメニュー">
+        <a href="#top">TOP</a>
+        <a href="#structure">大会構成</a>
+        <a href="#regional">地域予選ラウンド</a>
+        <a href="#history">過去大会の様子</a>
+        <a href="#contact">問い合わせ</a>
+        <a class="insta-link" href="https://www.instagram.com/＜実URL＞" target="_blank" rel="noopener"
+           aria-label="Instagramを開く" title="Instagram">
+            <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+        </a>
+
+    </nav>
+    <div class="nav-backdrop" id="navBackdrop" hidden></div>
+    <aside class="nav-panel" id="mobileNav" hidden>
+        <!-- ② ✕ボタンを追加（パネル内でも閉じられる） -->
+        <button class="close-panel" id="closePanel" aria-label="メニューを閉じる">✕</button>
+        <div class="nav-links">
+            <a href="#top">TOP</a>
+            <a href="#structure">大会構成</a>
+            <a href="#regional">予選</a>
+            <a href="#history">過去大会の様子</a>
+            <a href="#contact">問い合わせ</a>
+        </div>
+        <div class="nav-social">
+            <a class="social-pill" href="https://www.instagram.com/the_beach_flags_series" target="_blank" rel="noopener"
+               aria-label="Instagramを開く">
+                <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                <span class="handle">@the_beach_flags_series</span>
+            </a>
+        </div>
+    </aside>
+</header>
+
+<!-- ① Opening：スマホでも上下中央揃え -->
+<div id="overlay">
+    <div class="opening-content">
+        <img id="openingLogo" src="header.jpg" alt="Opening Logo" />
+    </div>
+</div>
+
+<main>
+    <section id="top" class="hero">
+        <img src="top.jpeg" alt="ビーチフラッグス イメージ" />
+    </section>
+
+    <section id="about">
+        <p class="lead-title">集まれ！足自慢！<br>誰でも参加可能なビーチフラッグス大会開催！</p>
+        <p class="lead-text">The Beach Flags Seriesは、ライフセービングスポーツのさらなる普及及び、溺水防止を目指し、ライフセービングスポーツの1種目である「ビーチフラッグス」をより多くの人に体験・観戦していただき、本競技の魅力を感じていただくことを目的としております。</p>
+        <p class="lead-text">本年度から地域予選ラウンドを展開し、上位8位以内の選手には、The Beach Flags Series～渋谷ファイナルラウンド～への出場権を獲得できます。</p>
+    </section>
+
+    <section id="structure">
+        <h2>大会構成</h2>
+        <div class="card">
+            <h3>渋谷ファイナルラウンド</h3>
+            <div class="section-title"><span class="chip">開催時期</span></div>
+            <p>2025年11月9日（8日体験会開催）</p>
+            <div class="section-title"><span class="chip">開催会場</span></div>
+            <p>東京都渋谷区宮下公園</p>
+            <div class="section-title"><span class="chip">主催</span></div>
+            <p>公益財団法人日本ライフセービング協会</p>
+            <div class="section-title"><span class="chip">参加カテゴリ</span></div>
+            <p>オープン（年齢制限なし）、ユース（U18）</p>
+            <div class="section-title"><span class="chip">参加条件</span></div>
+            <ul class="cond-list">
+                <li>地域予選ラウンドで上位8位以内への入賞</li>
+                <li>全日本ライフセービング選手権・ビーチフラッグス競技で上位8位以内への入賞</li>
+                <li>全日本学生ライフセービング選手権・ビーチフラッグス競技で上位8位以内への入賞</li>
+                <li>その他、本実行委員会が認めた競技者</li>
+                <li>ユースについては公募を行う想定</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="regional">
+        <h2>地域予選ラウンド</h2>
+        <p>以下3大会を地域予選ラウンドとして実施予定。</p>
+        <p>各大会はライフセーバーのみならず、「誰でも」参加が可能です。</p>
+
+        <div class="round card">
+            <h3>1. 第28回神奈川県ライフセービング選手権</h3>
+            <img src="kanagawa.jpg" alt="神奈川大会" />
+            <h4>競技日程</h4>
+            <ul>
+                <li class="list-style-none"><del>2025年5月24-25日</del><span class="badge danger">悪天候のため中止</span></li>
+            </ul>
+            <h4>開催会場</h4>
+            <ul>
+                <li class="list-style-none">神奈川県三浦市三浦海岸</li>
+            </ul>
+        </div>
+
+        <div class="round card">
+            <h3>2. Japan Beach Games 須磨2025</h3>
+            <img src="koube.png" alt="須磨大会" />
+            <h4>競技日程</h4>
+            <p>2025年10月4日（土）</p>
+            <ul>
+                <li>予選：13:00〜16:00</li>
+                <li>決勝：16:00〜16:45</li>
+                <li>表彰：16:45〜17:00</li>
+            </ul>
+            <p>※詳細なタイムテーブルは2次要項にて発信いたします。</p>
+
+            <h4>開催会場</h4>
+            <p>
+                神戸須磨海岸（Japan Beach Games 須磨会場内）<br>
+                <a href="https://jbgf.jp/beach_life_in_suma2025/" target="_blank" rel="noopener">https://jbgf.jp/beach_life_in_suma2025/</a>
+            </p>
+
+            <!-- Google マップ（既存の埋め込みでOK。差し替える場合は新しい埋め込みコードに） -->
+            <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26259.850379261137!2d135.08585421083984!3d34.64254610000005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x600085d05db968fd%3A0x8c09fd6a41fcef2f!2z6aCI56Oo5rW35bK4!5e0!3m2!1sja!2sjp!4v1757933399606!5m2!1sja!2sjp" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+            <p>
+                須磨海岸「願いの椰子の木」「海のひろば」前ビーチ<br>
+                「JR須磨駅」から徒歩15分<br>
+                「JR須磨海浜公園」から徒歩15分
+            </p>
+
+            <h4>カテゴリー</h4>
+            <ul>
+                <li>ユース（16歳〜18歳※）：男子・女子</li>
+                <li>オープン（年齢無制限）：男子・女子</li>
+                <li class="list-style-none">※2025年3月31日時点での年齢が16〜18歳であること。（当日時点で15歳の場合も参加可）</li>
+            </ul>
+
+            <h4>申し込み</h4>
+            <ul>
+                <li>締め切り：<span class="badge danger">9月24日（水）</span></li>
+                <li>参加費：2,000円（保険料込み）</li>
+                <li class="list-style-none">※募集状況によって延長/締め切り等になる場合がございます。</li>
+                <li class="list-style-none">※エントリー後の変更はできかねますのでご注意ください。</li>
+                <li>参加申し込み：
+                    <br>
+                    <a href="https://thebeachflagsseries.peatix.com/" target="_blank" rel="noopener">
+                        Peatix（The Beach Flags Series 神戸大会）
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="round card">
+            <h3>3. 第25回オーシャンサーフチャレンジin白浜2025</h3>
+            <img src="shirahama.png" alt="白浜大会" />
+
+            <h4>競技日程</h4>
+            <p>2025年10月25日（日）</p>
+            <ul>
+                <li>予選：13:00〜16:00</li>
+                <li>決勝：16:00〜16:45</li>
+                <li>表彰：16:45〜17:00</li>
+            </ul>
+            <p>※詳細なタイムテーブルは2次要項にて発信いたします。</p>
+
+            <h4>開催会場</h4>
+            <p>和歌山県・白良浜海水浴場</p>
+            <!-- 地図：必要に応じて別の埋め込みコードに差し替え可 -->
+            <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6640.103365974539!2d135.33542067770998!3d33.681725899999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6007a102efd950e3%3A0xd985d4dd8d99fb3a!2z55m96Imv5rWc!5e0!3m2!1sja!2sus!4v1757933007475!5m2!1sja!2sus" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <br>
+
+            <h4>カテゴリー</h4>
+            <ul>
+                <li>ユース（16歳〜18歳）：男子・女子</li>
+                <li>オープン（年齢無制限）：男子・女子</li>
+                <li class="list-style-none">※2025年3月31日時点での年齢が16〜18歳であること。（当日時点で15歳の場合も参加可）</li>
+            </ul>
+
+            <h4>申し込み</h4>
+            <ul>
+                <li>参加費：2,000円（保険料込み）</li>
+                <li class="list-style-none">※エントリー後の変更はできかねますのでご注意ください。</li>
+                <li>参加申し込み：<span class="badge neutral">まもなく公開予定</span></li>
+                <li class="list-style-none">※大会の中止・延期等により参加資格者数が想定に満たない場合は、別途参加枠を設ける可能性もございます。</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <section id="history">
+        <h2>過去大会の様子</h2>
+        <p>
+            【The Beach Flags Series 2023　大会記事】<br>
+            <a href="https://prtimes.jp/main/html/rd/p/000000029.000043525.html" target="_blank" rel="noopener">【開催報告】東京/渋谷で開催されたビーチイベント『The Beach Flags Series 2023』</a>
+        </p>
+        <p>【The Beach Flags Series 2023　大会映像】</p>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/erXq_7OFncY" allowfullscreen title="Beach Flags 2023"></iframe>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>お問い合わせ</h2>
+        <p>The Beach Flags Series実行委員会 宛<br>
+            <a href="mailto:lifesavingspst2032@gmail.com">lifesavingspst2032@gmail.com</a><br>
+            件名に【The Beach Flags Series 2025】を含め、所属・氏名を記載の上でご連絡ください。
+        </p>
+    </section>
+</main>
+<footer id="siteFooter">
+    <div class="inner">
+        <img src="header.jpg" alt="The Beach Flags Series ロゴ" />
+        <br>
+        <small>© 2025 The Beach Flags Series</small>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        /* ===== ① Opening animation（スマホで上下中央） ===== */
+        const overlay = document.getElementById('overlay');
+        const logo = document.getElementById('openingLogo');
+        requestAnimationFrame(() => {
+            logo.style.opacity = 1;
+            logo.style.transform = 'scale(1)';
+        });
+        setTimeout(() => {
+            overlay.style.transition = 'opacity 1.2s ease';
+            overlay.style.opacity = 0;
+            setTimeout(() => overlay.style.display = 'none', 1200);
+        }, 3000);
+
+        /* ヘッダーの影 */
+        const header = document.getElementById('siteHeader');
+        const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 2);
+        window.addEventListener('scroll', onScroll); onScroll();
+
+        /* ===== ② 改良ハンバーガー + ✕ボタン ===== */
+        const btn = document.getElementById('hamburger');
+        const panel = document.getElementById('mobileNav');
+        const backdrop = document.getElementById('navBackdrop');
+        const closePanelBtn = document.getElementById('closePanel');
+        const brand = document.querySelector('.brand');
+        const desktopNav = document.getElementById('navMenu');
+        const focusable = () => panel.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+
+        const openMenu = () => {
+            document.body.classList.add('menu-open');
+            btn.setAttribute('aria-expanded','true');
+            brand?.setAttribute('aria-hidden','true');
+            desktopNav?.setAttribute('aria-hidden','true');
+            panel.hidden = false; backdrop.hidden = false;
+            requestAnimationFrame(() => { panel.classList.add('show'); backdrop.classList.add('show'); });
+            const first = focusable()[0]; first?.focus({preventScroll:true});
+        };
+        const closeMenu = () => {
+            document.body.classList.remove('menu-open');
+            btn.setAttribute('aria-expanded','false');
+            brand?.removeAttribute('aria-hidden');
+            desktopNav?.removeAttribute('aria-hidden');
+            panel.classList.remove('show'); backdrop.classList.remove('show');
+            setTimeout(() => { panel.hidden = true; backdrop.hidden = true; }, 250);
+            btn.focus({preventScroll:true});
+        };
+
+        btn.addEventListener('click', () => (btn.getAttribute('aria-expanded') === 'true') ? closeMenu() : openMenu());
+        backdrop.addEventListener('click', closeMenu);
+        closePanelBtn.addEventListener('click', closeMenu);
+        panel.addEventListener('click', (e) => { if (e.target.matches('.nav-links a')) closeMenu(); });
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') closeMenu(); });
+
+        /* ===== ③④ ヘッダー見切れ防止 + スムーススクロール（オフセット補正） ===== */
+        const HEADER_OFFSET = header.getBoundingClientRect().height + 30; // ヘッダー高さ+余白ぶん
+        const smoothScrollWithOffset = (hash) => {
+            const target = document.querySelector(hash);
+            if (!target) return;
+            const y = target.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        };
+
+        // ページ内リンクのクリックを捕捉（デスクトップ/モバイル両方）
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', (e) => {
+                const hash = a.getAttribute('href');
+                if (hash && hash !== '#') {
+                    e.preventDefault();
+                    smoothScrollWithOffset(hash);
+                    history.pushState(null, '', hash); // URL更新（戻る対応）
+                }
+            });
+        });
+
+        // 直接 #付きURL で来た場合の初回補正
+        if (location.hash) {
+            setTimeout(() => smoothScrollWithOffset(location.hash), 0);
+        }
+
+        /* スクロールリビール */
+        const rounds = document.querySelectorAll('.round');
+        const reveal = () => {
+            const trigger = window.innerHeight * 0.85;
+            rounds.forEach(r => {
+                const rect = r.getBoundingClientRect();
+                if (rect.top < trigger) r.classList.add('visible');
+            });
+        };
+        window.addEventListener('scroll', reveal); reveal();
+    });
+</script>
+</body>
+</html>
